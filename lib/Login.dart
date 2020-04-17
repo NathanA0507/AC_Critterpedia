@@ -24,7 +24,7 @@ class Login{
     print(Firestore.instance
         .collection('users')
         .where("username", isEqualTo: "$_username")
-        .snapshots());
+        .snapshots().toList());
     return true;
 
   }
