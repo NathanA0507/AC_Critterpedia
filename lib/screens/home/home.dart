@@ -1,3 +1,4 @@
+import 'package:critterpedia/models/bugs.dart';
 import 'package:critterpedia/models/user.dart';
 import 'package:critterpedia/services/database.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:critterpedia/screens/home/lists/fossils.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:critterpedia/models/fish.dart';
+import 'package:critterpedia/models/fossils.dart';
 
 
 class Home extends StatefulWidget {
@@ -23,8 +25,12 @@ class _HomeState extends State<Home> {
     StreamProvider<List<Fish>>.value(
       value: DatabaseService().fish,
       child: FishList()),
-    Bugs(),
-    Fossils()
+    StreamProvider<List<Bug>>.value(
+        value: DatabaseService().bugs,
+        child: BugList()),
+    StreamProvider<List<Fossil>>.value(
+        value: DatabaseService().fossil,
+        child: FossilList())
   ];
 
   void _onItemTapped(int index) {
