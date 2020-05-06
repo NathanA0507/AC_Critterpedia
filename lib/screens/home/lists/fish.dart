@@ -5,9 +5,13 @@ import 'package:critterpedia/services/database.dart';
 import 'package:critterpedia/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:critterpedia/models/filter.dart';
 
 //Shows all fish in the game in a checklist style
 class FishList extends StatefulWidget {
+  final FishFilter filter;
+  FishList(this.filter);
+
   @override
   _FishListState createState() => _FishListState();
 }
@@ -18,18 +22,72 @@ class _FishListState extends State<FishList> {
     final fish = Provider.of<List<Fish>>(context) ?? [];
     final user = Provider.of<User>(context);
     final db = DatabaseService(uid: user.uid);
-
+    FishFilter filter = Provider.of<FishFilter>(context);
     return FutureBuilder<DocumentSnapshot>(
         future: db.inventory.document(user.uid).get(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Loading();
           } else {
-            print(snapshot);
-            print(snapshot.data['fish']['sea-bass']);
             return ListView.builder(
                 itemCount: fish.length,
                 itemBuilder: (context, index) {
+                  print(filter.toString());
+                  print(fish[index].name);
+                  if(filter != null){
+                    if(!(filter.months.toSet().intersection(fish[index].months_n.toSet()).length > 0) || filter.months.isEmpty){
+                      return Container();
+                    }
+                    int i = filter.startHour;
+                    var inRange = false;
+                    print(fish[index].name);
+                    while(i != filter.endHour){
+                      if(fish[index].startTime <= fish[index].endTime){
+                        print(i);
+                        if(i >= fish[index].startTime && i <= fish[index].endTime){
+                          print('True1');
+                          inRange = true;
+                          break;
+                        }
+                      }
+                      else{
+
+                        if(i <= fish[index].startTime || i >= fish[index].endTime){
+                          print('True2');
+                          inRange = true;
+                          break;
+                        }
+                      }
+                      i++;
+                      if(i == 24){
+                        i = 0;
+                      }
+                    }
+                    if(filter.startHour == filter.endHour){
+                      if(fish[index].startTime <= fish[index].endTime){
+                        if(filter.startHour >= fish[index].startTime && filter.endHour <= fish[index].endTime){
+                          inRange = true;
+                        }
+                      } else{
+                        if(filter.startHour <= fish[index].startTime || filter.endHour >= fish[index].endTime) {
+                          inRange = true;
+                        }
+                      }
+                    }
+                    if(!inRange){
+                      return Container();
+                    }
+                    if(!filter.sea && (fish[index].location.contains("Sea") || fish[index].location.contains("Pier"))){
+                      return Container();
+                    }
+                    if(!filter.river && fish[index].location.contains("River")){
+                      return Container();
+                    }
+                    if(!filter.pond && fish[index].location.contains("Pond")){
+                      return Container();
+                    }
+                  }
+
                   return Card(
                     child: ListTile(
                       onTap: () {

@@ -83,6 +83,8 @@ class FossilDetailScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text(fossil.name)),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Image.asset(
                 'assets/fossils/NH-Furniture-${fossil.name.toLowerCase().replaceAll(" ", '').replaceAll('-', '').replaceAll("'",'').replaceAll(".",'')}.png'),

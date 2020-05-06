@@ -1,3 +1,4 @@
+import 'package:critterpedia/models/filter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:critterpedia/models/user.dart';
@@ -14,8 +15,15 @@ class Wrapper extends StatelessWidget {
     if(user == null){
       return Authenticate();
     } else{
-      //Return home (temporary solution, will make it look nicer)
-      return Home();
+      return MultiProvider(
+          providers: [
+            Provider<FishFilter>(
+                create: (_) => FishFilter(months: ['Jan'])),
+            Provider<BugFilter>(
+              create: (_) => BugFilter(),
+            )
+          ],
+          child: Home());
     }
   }
 }

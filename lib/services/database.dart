@@ -27,7 +27,6 @@ class DatabaseService{
         endTime: doc.data['endTime'] ?? -1,
         value: doc.data['value'] ?? 0,
         months_n: doc.data['months_n'] ?? [dynamic],
-        image: doc.data['image'] ?? '',
         location: doc.data['location'] ?? '',
         docId: doc.documentID,
         shadowSize: doc.data['shadowSize'] ?? 'none'
@@ -58,7 +57,6 @@ class DatabaseService{
           endTime: doc.data['endTime'] ?? -1,
           value: doc.data['value'] ?? 0,
           months_n: doc.data['months_n'] ?? [dynamic],
-          image: doc.data['image'] ?? '',
           location: doc.data['location'] ?? '',
           docId: doc.documentID,
       );
@@ -95,7 +93,7 @@ class DatabaseService{
 
 
   Future<void> addFossil(String id) async{
-    inventory.document(uid).updateData({"fossils.$id": FieldValue.increment(1)});
+    inventory.document(uid).updateData({"fossils.${id.replaceAll('.', '')}": FieldValue.increment(1)});
   }
 
   Future<void> removeFossil(String id) async {
