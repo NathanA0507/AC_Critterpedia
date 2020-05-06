@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:critterpedia/services/authenticate.dart';
 import 'package:critterpedia/shared/loading.dart';
 
+///[Register] is a screen for users to register and join the service
 class Register extends StatefulWidget {
+  ///[toggleView] will swap the view between Register and SignIn
   final Function toggleView;
 
   Register({this.toggleView});
@@ -10,7 +12,7 @@ class Register extends StatefulWidget {
   @override
   _RegisterState createState() => _RegisterState();
 }
-
+///[_RegisterState] is the state for [Register]
 class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();

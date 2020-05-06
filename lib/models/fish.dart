@@ -1,3 +1,4 @@
+///Fish holds the information for each fish from Firestore for use in the program.
 class Fish {
   String docId;
   int startTime;

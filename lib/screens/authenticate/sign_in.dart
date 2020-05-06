@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:critterpedia/services/authenticate.dart';
 import 'package:critterpedia/shared/loading.dart';
 
+///[SignIn] shows the screen that allows users to sign-in to the app
 class SignIn extends StatefulWidget {
+  ///[toggleView] will swap the view between SignIn and Register
   final Function toggleView;
   SignIn({this.toggleView});
 
   @override
   _SignInState createState() => _SignInState();
 }
-
+///[_SignInState] is the state for [SignIn]
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();

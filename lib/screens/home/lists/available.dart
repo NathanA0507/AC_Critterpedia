@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:critterpedia/screens/home/lists/fish.dart';
 import 'package:critterpedia/screens/home/lists/bugs.dart';
 
-//Will show all fish/bugs that are currently available
+/// Will show all fish/bugs that are currently available
 class Available extends StatefulWidget {
   @override
   _AvailableState createState() => _AvailableState();
@@ -135,7 +135,9 @@ class _AvailableState extends State<Available> {
           }
         });
   }
-
+  ///[_numToMonth()] converts a number to a month
+  ///
+  /// Helper method to convert DateTime.now().month to a string
   static String _numToMonth(int month) {
     switch (month) {
       case 1:

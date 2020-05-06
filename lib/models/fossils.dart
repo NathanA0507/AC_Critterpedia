@@ -1,3 +1,4 @@
+///Fossil holds the information for each fossil from Firestore for use in the program.
 class Fossil {
   String name;
   int value;

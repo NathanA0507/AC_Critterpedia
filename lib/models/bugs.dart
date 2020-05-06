@@ -1,3 +1,4 @@
+///Bug holds the information for each bug from Firestore for use in the program.
 class Bug {
   String docId;
   int startTime;

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:critterpedia/models/filter.dart';
 
+///Shows options for filtering fish in a BottomSheet
 class FishFilterOptions extends StatefulWidget {
+  ///[filter] is the same filter that the FishList screen uses
   final FishFilter filter;
   FishFilterOptions(this.filter);
 
   @override
   _FishFilterOptionsState createState() => _FishFilterOptionsState();
 }
-
+///State for FishFilterOptions
 class _FishFilterOptionsState extends State<FishFilterOptions> {
   FishFilter tempFishFilter = FishFilter(
       sea: false,

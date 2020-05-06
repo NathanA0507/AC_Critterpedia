@@ -6,7 +6,7 @@ import 'package:critterpedia/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-//Shows all fossils in the game in a checklist style
+/// Shows all fossils in the game in a checklist style
 class FossilList extends StatefulWidget {
   @override
   _FossilListState createState() => _FossilListState();
@@ -38,9 +38,11 @@ class _FossilListState extends State<FossilList> {
                           }));
                         },
                         leading: Image.asset(
-                            'assets/fossils/NH-Furniture-${fossils[index].name.toLowerCase().replaceAll(" ", '').replaceAll('-', '').replaceAll("'",'').replaceAll(".",'')}.png'),
+                            'assets/fossils/NH-Furniture-${fossils[index].name.toLowerCase().replaceAll(" ", '').replaceAll('-', '').replaceAll("'", '').replaceAll(".", '')}.png'),
                         title: Text(fossils[index].name),
-                        trailing: Text('Amount: ${snapshot.data['fossils'][fossils[index].docId] ?? 0}',style: TextStyle(fontSize: 15)),
+                        trailing: Text(
+                            'Amount: ${snapshot.data['fossils'][fossils[index].docId] ?? 0}',
+                            style: TextStyle(fontSize: 15)),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -49,18 +51,14 @@ class _FossilListState extends State<FossilList> {
                             child: Text("Add"),
                             onPressed: () async {
                               db.addFossil(fossils[index].docId);
-                              setState(() {
-
-                              });
+                              setState(() {});
                             },
                           ),
                           FlatButton(
                             child: Text("Subtract"),
                             onPressed: () async {
                               db.removeFossil(fossils[index].docId);
-                              setState(() {
-
-                              });
+                              setState(() {});
                             },
                           )
                         ],
@@ -73,6 +71,7 @@ class _FossilListState extends State<FossilList> {
   }
 }
 
+///FossilDetailScreen is a detailed view of fossils
 class FossilDetailScreen extends StatelessWidget {
   final Fossil fossil;
 
@@ -82,14 +81,16 @@ class FossilDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(fossil.name)),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-                'assets/fossils/NH-Furniture-${fossil.name.toLowerCase().replaceAll(" ", '').replaceAll('-', '').replaceAll("'",'').replaceAll(".",'')}.png'),
-            Text("Price: ${fossil.value} Bells"),
-          ],
-        ));
+        body:
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Image.asset(
+                  'assets/fossils/NH-Furniture-${fossil.name.toLowerCase().replaceAll(" ", '').replaceAll('-', '').replaceAll("'", '').replaceAll(".", '')}.png'),
+              Text("Price: ${fossil.value} Bells"),
+            ],
+          ),
+        ]));
   }
 }

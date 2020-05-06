@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:critterpedia/models/filter.dart';
 
+///Shows options for filtering bugs in a BottomSheet
 class BugFilterOptions extends StatefulWidget {
+  ///[filter] is the same filter that the BugList screen uses
   final BugFilter filter;
   BugFilterOptions(this.filter);
 

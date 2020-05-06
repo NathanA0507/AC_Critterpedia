@@ -1,57 +1,44 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:critterpedia/models/fish.dart';
 import 'package:critterpedia/models/bugs.dart';
 import 'package:critterpedia/models/fossils.dart';
 
-class DatabaseService{
+///DatabaseService handles all interactions with the database
+class DatabaseService {
+  ///[uid] is the UserId of the current user
   final String uid;
+
   DatabaseService({this.uid});
 
-  final CollectionReference inventory = Firestore.instance.collection('inventory');
-  final CollectionReference fishCollection = Firestore.instance.collection('fish');
-  final CollectionReference bugsCollection = Firestore.instance.collection('bugs');
-  final CollectionReference fossilsCollection = Firestore.instance.collection('fossils');
+  ///[inventory] is a reference to the "inventory" table in Firebase
+  final CollectionReference inventory =
+      Firestore.instance.collection('inventory');
 
+  ///[fishCollection] is a reference to the "fish" table in Firebase
+  final CollectionReference fishCollection =
+      Firestore.instance.collection('fish');
+
+  ///[bugsCollection] is a reference to the "bugs" table in Firebase
+  final CollectionReference bugsCollection =
+      Firestore.instance.collection('bugs');
+
+  ///[fossilsCollection] is a reference to the "fossils" table in Firebase
+  final CollectionReference fossilsCollection =
+      Firestore.instance.collection('fossils');
+
+  ///[createDocument()] will create a new inventory document in firebase
   Future<void> createDocument() async {
-    return await inventory.document(uid).setData({'fish' : {}, 'bugs':{}, 'fossils': {} });
+    return await inventory
+        .document(uid)
+        .setData({'fish': {}, 'bugs': {}, 'fossils': {}});
   }
 
-  List<Fish> _fishListFromSnapshot(QuerySnapshot snapshot){
-    return snapshot.documents.map((doc){
+  ///[_fishListFromSnapshot] will take a [QuerySnapshot] and turn it into a
+  ///list of [Fish]
+  List<Fish> _fishListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
       print(doc.data);
       return Fish(
-        name: doc.data['name'] ?? '',
-        startTime: doc.data['startTime'] ?? -1,
-        endTime: doc.data['endTime'] ?? -1,
-        value: doc.data['value'] ?? 0,
-        months_n: doc.data['months_n'] ?? [dynamic],
-        location: doc.data['location'] ?? '',
-        docId: doc.documentID,
-        shadowSize: doc.data['shadowSize'] ?? 'none'
-      );
-    }).toList();
-  }
-
-  Stream<List<Fish>> get fish{
-    return fishCollection.snapshots().map(_fishListFromSnapshot);
-  }
-
-
-  Future<void> addFish(String id) async{
-    inventory.document(uid).updateData({"fish.$id": true});
-  }
-
-  Future<void> removeFish(String id) async {
-    inventory.document(uid).updateData({"fish.$id":false});
-  }
-
-
-  List<Bug> _bugsListFromSnapshot(QuerySnapshot snapshot){
-    return snapshot.documents.map((doc){
-      print(doc.data);
-      return Bug(
           name: doc.data['name'] ?? '',
           startTime: doc.data['startTime'] ?? -1,
           endTime: doc.data['endTime'] ?? -1,
@@ -59,25 +46,60 @@ class DatabaseService{
           months_n: doc.data['months_n'] ?? [dynamic],
           location: doc.data['location'] ?? '',
           docId: doc.documentID,
+          shadowSize: doc.data['shadowSize'] ?? 'none');
+    }).toList();
+  }
+
+  ///[fish] gets a stream of fish from the database
+  Stream<List<Fish>> get fish {
+    return fishCollection.snapshots().map(_fishListFromSnapshot);
+  }
+
+  ///[addFish] adds a fish to the user's inventory
+  Future<void> addFish(String id) async {
+    inventory.document(uid).updateData({"fish.$id": true});
+  }
+
+  ///[removeFish] removes a fish from the user's inventory
+  Future<void> removeFish(String id) async {
+    inventory.document(uid).updateData({"fish.$id": false});
+  }
+
+  ///[_bugsListFromSnapshot] takes a [QuerySnapshot] and returns a list of bugs
+  List<Bug> _bugsListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      print(doc.data);
+      return Bug(
+        name: doc.data['name'] ?? '',
+        startTime: doc.data['startTime'] ?? -1,
+        endTime: doc.data['endTime'] ?? -1,
+        value: doc.data['value'] ?? 0,
+        months_n: doc.data['months_n'] ?? [dynamic],
+        location: doc.data['location'] ?? '',
+        docId: doc.documentID,
       );
     }).toList();
   }
 
-  Stream<List<Bug>> get bugs{
+  ///[bugs] is a getter that returns a stream of bugs from the database
+  Stream<List<Bug>> get bugs {
     return bugsCollection.snapshots().map(_bugsListFromSnapshot);
   }
 
-
-  Future<void> addBug(String id) async{
+  ///[addBug] adds a bug to the user's inventory
+  Future<void> addBug(String id) async {
     inventory.document(uid).updateData({"bugs.$id": true});
   }
 
+  ///[removeBug] removes a bug from the user's inventory
   Future<void> removeBug(String id) async {
-    inventory.document(uid).updateData({"bugs.$id":false});
+    inventory.document(uid).updateData({"bugs.$id": false});
   }
 
-  List<Fossil> _fossilsListFromSnapshot(QuerySnapshot snapshot){
-    return snapshot.documents.map((doc){
+  ///[_fossilsListFromSnapshot] takes a [QuerySnapshot] and returns a List of
+  ///fossils
+  List<Fossil> _fossilsListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
       print(doc.data);
       return Fossil(
         name: doc.data['name'] ?? '',
@@ -87,25 +109,25 @@ class DatabaseService{
     }).toList();
   }
 
-  Stream<List<Fossil>> get fossil{
+  ///[fossil] is a getter that returns a stream of fossils from the database
+  Stream<List<Fossil>> get fossil {
     return fossilsCollection.snapshots().map(_fossilsListFromSnapshot);
   }
 
-
-  Future<void> addFossil(String id) async{
-    inventory.document(uid).updateData({"fossils.${id.replaceAll('.', '')}": FieldValue.increment(1)});
+  ///[addFossil] adds a fossil to the user's inventory
+  ///
+  /// addFossil is different from the addBug and addFish methods because
+  /// there can be excess fossils and that idea doesn't apply to bugs/fish,
+  /// so instead of a boolean it stores a number in the database
+  Future<void> addFossil(String id) async {
+    inventory.document(uid).updateData(
+        {"fossils.${id.replaceAll('.', '')}": FieldValue.increment(1)});
   }
 
+  ///[removeFossil] removes a fossil from the user's inventory
   Future<void> removeFossil(String id) async {
-    inventory.document(uid).updateData({"fossils.$id": FieldValue.increment(-1)});
+    inventory
+        .document(uid)
+        .updateData({"fossils.$id": FieldValue.increment(-1)});
   }
-
-
-  Future<Map<String, bool>> inventoryMap(String type) async {
-    var inv = await inventory.document(uid).get();
-    var data = inv.data;
-    return Map<String, bool>.from(data);
-  }
-
-
 }
