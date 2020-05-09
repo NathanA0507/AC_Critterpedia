@@ -1,5 +1,8 @@
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+
 ///Fish filter holds the info as to how the user wants to filter the fish by
-class FishFilter {
+class FishFilter with ChangeNotifier{
   bool sea;
   bool river;
   bool pond;
@@ -16,6 +19,10 @@ class FishFilter {
     this.endHour = 23,
   });
 
+  void redraw(){
+    notifyListeners();
+  }
+
   toString() {
     return "sea: $sea, river: $river, pond: $pond, months: $months, startHour: $startHour "
         "endHour: $endHour ";
@@ -23,7 +30,7 @@ class FishFilter {
 }
 
 ///BugFilter holds the info as to how the user wants to filter the bugs by
-class BugFilter {
+class BugFilter with ChangeNotifier {
   bool flying;
   bool flowers;
   bool ground;
@@ -42,4 +49,8 @@ class BugFilter {
       this.months = const [],
       this.startHour = 0,
       this.endHour = 23});
+
+  void redraw(){
+    notifyListeners();
+  }
 }

@@ -23,9 +23,9 @@ class Wrapper extends StatelessWidget {
     } else{
       return MultiProvider(
           providers: [
-            Provider<FishFilter>(
+            ChangeNotifierProvider<FishFilter>(
                 create: (_) => FishFilter(months: allMonths)),
-            Provider<BugFilter>(
+            ChangeNotifierProvider<BugFilter>(
               create: (_) => BugFilter(months: allMonths),
             )
           ],

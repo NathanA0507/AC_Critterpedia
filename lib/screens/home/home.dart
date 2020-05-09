@@ -44,20 +44,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-  ///[_rebuildAllChildren()] will rebuild all children when called
-  ///
-  /// This method is a bit of a hack but it allows for filtering to work since
-  /// I could not figure out how to automatically rebuild after the filtering
-  /// goes through
-  void _rebuildAllChildren(BuildContext context) {
-    void rebuild(Element el) {
-      el.markNeedsBuild();
-      el.visitChildren(rebuild);
-    }
-
-    (context as Element).visitChildren(rebuild);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,21 +74,20 @@ class _HomeState extends State<Home> {
                     switch (_selectedIndex) {
                       case 1:
                         var fish = Provider.of<FishFilter>(context);
-                        await showModalBottomSheet(
+                        showModalBottomSheet(
                             context: context,
                             builder: (context) {
                               return FishFilterOptions(fish);
                             });
-                        _rebuildAllChildren(context);
+
                         break;
                       case 2:
                         var bugs = Provider.of<BugFilter>(context);
-                        await showModalBottomSheet(
+                        showModalBottomSheet(
                             context: context,
                             builder: (context) {
                               return BugFilterOptions(bugs);
                             });
-                        _rebuildAllChildren(context);
                         break;
                     }
                   },

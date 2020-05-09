@@ -23,110 +23,112 @@ class _FishListState extends State<FishList> {
     final fish = Provider.of<List<Fish>>(context) ?? [];
     final user = Provider.of<User>(context);
     final db = DatabaseService(uid: user.uid);
-    FishFilter filter = Provider.of<FishFilter>(context);
-    return FutureBuilder<DocumentSnapshot>(
-        future: db.inventory.document(user.uid).get(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Loading();
-          } else {
-            return ListView.builder(
-                itemCount: fish.length,
-                itemBuilder: (context, index) {
-                  print(filter.toString());
-                  print(fish[index].name);
-                  if (filter != null) {
-                    if (!(filter.months
-                                .toSet()
-                                .intersection(fish[index].months_n.toSet())
-                                .length >
-                            0) ||
-                        filter.months.isEmpty) {
-                      return Container();
-                    }
-                    int i = filter.startHour;
-                    var inRange = false;
+    return Consumer<FishFilter>(builder: (context, filter, child) {
+      return FutureBuilder<DocumentSnapshot>(
+          future: db.inventory.document(user.uid).get(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Loading();
+            } else {
+              return ListView.builder(
+                  itemCount: fish.length,
+                  itemBuilder: (context, index) {
+                    print(filter.toString());
                     print(fish[index].name);
-                    while (i != filter.endHour) {
-                      if (fish[index].startTime <= fish[index].endTime) {
-                        print(i);
-                        if (i >= fish[index].startTime &&
-                            i <= fish[index].endTime) {
-                          print('True1');
-                          inRange = true;
-                          break;
+                    if (filter != null) {
+                      if (!(filter.months
+                                  .toSet()
+                                  .intersection(fish[index].months_n.toSet())
+                                  .length >
+                              0) ||
+                          filter.months.isEmpty) {
+                        return Container();
+                      }
+                      int i = filter.startHour;
+                      var inRange = false;
+                      print(fish[index].name);
+                      while (i != filter.endHour) {
+                        if (fish[index].startTime <= fish[index].endTime) {
+                          print(i);
+                          if (i >= fish[index].startTime &&
+                              i <= fish[index].endTime) {
+                            print('True1');
+                            inRange = true;
+                            break;
+                          }
+                        } else {
+                          if (i <= fish[index].startTime ||
+                              i >= fish[index].endTime) {
+                            print('True2');
+                            inRange = true;
+                            break;
+                          }
                         }
-                      } else {
-                        if (i <= fish[index].startTime ||
-                            i >= fish[index].endTime) {
-                          print('True2');
-                          inRange = true;
-                          break;
+                        i++;
+                        if (i == 24) {
+                          i = 0;
                         }
                       }
-                      i++;
-                      if (i == 24) {
-                        i = 0;
-                      }
-                    }
-                    if (filter.startHour == filter.endHour) {
-                      if (fish[index].startTime <= fish[index].endTime) {
-                        if (filter.startHour >= fish[index].startTime &&
-                            filter.endHour <= fish[index].endTime) {
-                          inRange = true;
-                        }
-                      } else {
-                        if (filter.startHour <= fish[index].startTime ||
-                            filter.endHour >= fish[index].endTime) {
-                          inRange = true;
+                      if (filter.startHour == filter.endHour) {
+                        if (fish[index].startTime <= fish[index].endTime) {
+                          if (filter.startHour >= fish[index].startTime &&
+                              filter.endHour <= fish[index].endTime) {
+                            inRange = true;
+                          }
+                        } else {
+                          if (filter.startHour <= fish[index].startTime ||
+                              filter.endHour >= fish[index].endTime) {
+                            inRange = true;
+                          }
                         }
                       }
+                      if (!inRange) {
+                        return Container();
+                      }
+                      if (!filter.sea &&
+                          (fish[index].location.contains("Sea") ||
+                              fish[index].location.contains("Pier"))) {
+                        return Container();
+                      }
+                      if (!filter.river &&
+                          fish[index].location.contains("River")) {
+                        return Container();
+                      }
+                      if (!filter.pond &&
+                          fish[index].location.contains("Pond")) {
+                        return Container();
+                      }
                     }
-                    if (!inRange) {
-                      return Container();
-                    }
-                    if (!filter.sea &&
-                        (fish[index].location.contains("Sea") ||
-                            fish[index].location.contains("Pier"))) {
-                      return Container();
-                    }
-                    if (!filter.river &&
-                        fish[index].location.contains("River")) {
-                      return Container();
-                    }
-                    if (!filter.pond && fish[index].location.contains("Pond")) {
-                      return Container();
-                    }
-                  }
 
-                  return Card(
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return FishDetailScreen(fish[index]);
-                        }));
-                      },
-                      leading: Image.asset(
-                          'assets/fish/NH-Icon-${fish[index].name.toLowerCase().replaceAll(" ", '').replaceAll('-', '').replaceAll("'", '').replaceAll(".", '')}.png'),
-                      title: Text(fish[index].name),
-                      trailing: Checkbox(
-                          value:
-                              snapshot.data['fish'][fish[index].docId] ?? false,
-                          onChanged: (val) async {
-                            if (snapshot.data['fish'][fish[index].docId] !=
-                                    null &&
-                                snapshot.data['fish'][fish[index].docId]) {
-                              await db.removeFish(fish[index].docId);
-                            } else
-                              await db.addFish(fish[index].docId);
-                            setState(() {});
-                          }),
-                    ),
-                  );
-                });
-          }
-        });
+                    return Card(
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return FishDetailScreen(fish[index]);
+                          }));
+                        },
+                        leading: Image.asset(
+                            'assets/fish/NH-Icon-${fish[index].name.toLowerCase().replaceAll(" ", '').replaceAll('-', '').replaceAll("'", '').replaceAll(".", '')}.png'),
+                        title: Text(fish[index].name),
+                        trailing: Checkbox(
+                            value: snapshot.data['fish'][fish[index].docId] ??
+                                false,
+                            onChanged: (val) async {
+                              if (snapshot.data['fish'][fish[index].docId] !=
+                                      null &&
+                                  snapshot.data['fish'][fish[index].docId]) {
+                                await db.removeFish(fish[index].docId);
+                              } else
+                                await db.addFish(fish[index].docId);
+                              setState(() {});
+                            }),
+                      ),
+                    );
+                  });
+            }
+          });
+    });
   }
 }
 

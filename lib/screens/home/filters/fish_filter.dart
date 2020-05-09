@@ -366,7 +366,7 @@ class _FishFilterOptionsState extends State<FishFilterOptions> {
                         widget.filter.sea = true;
                         widget.filter.river = true;
                         widget.filter.pond = true;
-
+                        widget.filter.redraw();
                         Navigator.pop(context);
                       }
                     ),
@@ -380,6 +380,7 @@ class _FishFilterOptionsState extends State<FishFilterOptions> {
                         widget.filter.sea = tempFishFilter.sea;
                         widget.filter.river = tempFishFilter.river;
                         widget.filter.pond = tempFishFilter.pond;
+                        widget.filter.redraw();
 
                         Navigator.pop(context);
                       },

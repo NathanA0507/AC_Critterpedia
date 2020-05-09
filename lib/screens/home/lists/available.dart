@@ -31,7 +31,13 @@ class _AvailableState extends State<Available> {
             return Loading();
           } else {
             return Column(children: <Widget>[
-              Text("Available Now!"),
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: Text(
+                  "Available Now!",
+                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+                ),
+              ),
               Text("Fish"),
               Expanded(
                 child: ListView.builder(
@@ -135,6 +141,7 @@ class _AvailableState extends State<Available> {
           }
         });
   }
+
   ///[_numToMonth()] converts a number to a month
   ///
   /// Helper method to convert DateTime.now().month to a string

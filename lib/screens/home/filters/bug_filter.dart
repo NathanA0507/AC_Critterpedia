@@ -389,6 +389,7 @@ class _BugFilterOptionsState extends State<BugFilterOptions> {
                           widget.filter.ground = true;
                           widget.filter.trees = true;
                           widget.filter.other = true;
+                          widget.filter.redraw();
 
                           Navigator.pop(context);
                         }
@@ -405,6 +406,7 @@ class _BugFilterOptionsState extends State<BugFilterOptions> {
                         widget.filter.flowers = tempBugFilter.flowers;
                         widget.filter.ground = tempBugFilter.ground;
                         widget.filter.other = tempBugFilter.other;
+                        widget.filter.redraw();
 
                         Navigator.pop(context);
                       },
